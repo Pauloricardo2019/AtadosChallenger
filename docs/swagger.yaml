@@ -1,0 +1,238 @@
+definitions:
+  CreateVoluntaryRequest:
+    properties:
+      city:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      neighborhood:
+        type: string
+    type: object
+  CreateVoluntaryVO:
+    properties:
+      id:
+        type: integer
+    type: object
+  GetAllVoluntariesResponse:
+    properties:
+      pagination:
+        $ref: '#/definitions/VoluntaryPagination'
+      voluntaries:
+        items:
+          $ref: '#/definitions/Voluntary'
+        type: array
+    type: object
+  GetVoluntaryByIDResponse:
+    properties:
+      city:
+        type: string
+      createdAt:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      neighborhood:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  UpdateVoluntaryRequest:
+    properties:
+      city:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      neighborhood:
+        type: string
+    type: object
+  Voluntary:
+    properties:
+      city:
+        type: string
+      createdAt:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      neighborhood:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  VoluntaryPagination:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+paths:
+  /atados/v1/health:
+    get:
+      consumes:
+      - application/json
+      description: healthcheck router
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: healthcheck router
+      tags:
+      - Healthcheck
+  /atados/v1/voluntary:
+    get:
+      consumes:
+      - application/json
+      description: get all products by pagination router
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GetAllVoluntariesResponse'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get all products by pagination router
+      tags:
+      - Voluntary
+    post:
+      consumes:
+      - application/json
+      description: create product router
+      parameters:
+      - description: create product
+        in: body
+        name: createProductRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreateVoluntaryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/CreateVoluntaryVO'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create product router
+      tags:
+      - Voluntary
+  /atados/v1/voluntary/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete product router
+      parameters:
+      - description: id product
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voluntary deleted successfully
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: delete product router
+      tags:
+      - Voluntary
+    get:
+      consumes:
+      - application/json
+      description: get product by id router
+      parameters:
+      - description: id product
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GetVoluntaryByIDResponse'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get product by id router
+      tags:
+      - Voluntary
+    put:
+      consumes:
+      - application/json
+      description: update product router
+      parameters:
+      - description: id product
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update product
+        in: body
+        name: updateProductRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateVoluntaryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voluntary updated successfully
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update product router
+      tags:
+      - Voluntary
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

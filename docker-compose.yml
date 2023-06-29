@@ -1,0 +1,13 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: atados
+      POSTGRES_PASSWORD: atados123
+      POSTGRES_DB: atados
+      POSTGRES_HOST: localhost
+    ports:
+      - 5532:5432
+
