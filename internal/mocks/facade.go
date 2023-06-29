@@ -10,6 +10,9 @@ type (
 	VoluntaryFacadeMock struct {
 		mock.Mock
 	}
+	ActionFacadeMock struct {
+		mock.Mock
+	}
 )
 
 func (p *VoluntaryFacadeMock) CreateVoluntary(ctx context.Context, voluntaryRequest *dto.CreateVoluntaryRequest) (*dto.CreateVoluntaryVO, error) {
@@ -77,6 +80,82 @@ func (p *VoluntaryFacadeMock) UpdateVoluntary(ctx context.Context, voluntaryID u
 }
 
 func (p *VoluntaryFacadeMock) DeleteVoluntary(ctx context.Context, id uint64) error {
+	args := p.Called(ctx, id)
+
+	var err error
+
+	if args.Get(0) != nil {
+		err = args.Get(0).(error)
+	}
+
+	return err
+}
+
+func (p *VoluntaryFacadeMock) CreateAction(ctx context.Context, actionRequest *dto.CreateActionRequest) (*dto.CreateActionVO, error) {
+	args := p.Called(ctx, actionRequest)
+
+	var actionReq *dto.CreateActionVO
+	var err error
+
+	if args.Get(0) != nil {
+		actionReq = args.Get(0).(*dto.CreateActionVO)
+	}
+
+	if args.Get(1) != nil {
+		err = args.Get(1).(error)
+	}
+
+	return actionReq, err
+}
+
+func (p *ActionFacadeMock) GetActionByID(ctx context.Context, id uint64) (*dto.GetActionByIDResponse, error) {
+	args := p.Called(ctx, id)
+
+	var actionReq *dto.GetActionByIDResponse
+	var err error
+
+	if args.Get(0) != nil {
+		actionReq = args.Get(0).(*dto.GetActionByIDResponse)
+	}
+
+	if args.Get(1) != nil {
+		err = args.Get(1).(error)
+	}
+
+	return actionReq, err
+}
+
+func (p *ActionFacadeMock) GetAllActions(ctx context.Context, limit, offset int) (*dto.GetAllActionsResponse, error) {
+	args := p.Called(ctx, limit, offset)
+
+	var actionReq *dto.GetAllActionsResponse
+	var err error
+
+	if args.Get(0) != nil {
+		actionReq = args.Get(0).(*dto.GetAllActionsResponse)
+	}
+
+	if args.Get(1) != nil {
+		err = args.Get(1).(error)
+	}
+
+	return actionReq, err
+}
+
+func (p *ActionFacadeMock) UpdateAction(ctx context.Context, actionID uint64, actionRequest *dto.UpdateActionRequest) error {
+	args := p.Called(ctx, actionID, actionRequest)
+
+	var err error
+
+	if args.Get(0) != nil {
+		err = args.Get(0).(error)
+	}
+
+	return err
+
+}
+
+func (p *ActionFacadeMock) DeleteAction(ctx context.Context, id uint64) error {
 	args := p.Called(ctx, id)
 
 	var err error

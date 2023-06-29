@@ -17,7 +17,7 @@ type GetAllVoluntariesResponse struct {
 } // @name GetAllVoluntariesResponse
 
 type Voluntary struct {
-	ID           uint64    `gorm:"primary_key;auto_increment;column:id"`
+	ID           uint64    `json:"id"`
 	FirstName    string    `gorm:"column:first_name"`
 	LastName     string    `gorm:"column:last_name"`
 	Neighborhood string    `gorm:"column:neighborhood"`
@@ -26,7 +26,7 @@ type Voluntary struct {
 	UpdatedAt    time.Time `gorm:"autoUpdateTime:milli;column:updated_at"`
 } // @name Voluntary
 
-func (g *GetAllVoluntariesResponse) ParseFromProductVO(voluntaries []model.Voluntary, limit, offset int, total int64) {
+func (g *GetAllVoluntariesResponse) ParseFromVoluntaryVO(voluntaries []model.Voluntary, limit, offset int, total int64) {
 	g.Pagination.Limit = limit
 	g.Pagination.Offset = offset
 	g.Pagination.Total = total

@@ -17,6 +17,7 @@ func init() {
     				city VARCHAR(255) NOT NULL,
 					neighborhood VARCHAR(255) NOT NULL,
     				address VARCHAR(255) NOT NULL,
+    				description VARCHAR(255) NOT NULL,
 					created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 				)`

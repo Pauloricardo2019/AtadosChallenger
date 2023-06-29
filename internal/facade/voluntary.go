@@ -81,7 +81,7 @@ func (p *voluntaryFacade) GetAllVoluntaries(ctx context.Context, limit, offset i
 	p.logger.Debug("Count", zap.Int64("count", count))
 
 	productsResponse := &dto.GetAllVoluntariesResponse{}
-	productsResponse.ParseFromProductVO(products, limit, offset, count)
+	productsResponse.ParseFromVoluntaryVO(products, limit, offset, count)
 
 	p.logger.Debug("Voluntaries response", zap.Any("response", productsResponse))
 	p.logger.Info("Facade: Voluntaries gotten")
