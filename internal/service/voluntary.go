@@ -19,36 +19,42 @@ func NewVoluntaryService(voluntaryRepository voluntaryRepository, logger *zap.Lo
 }
 
 func (p *voluntaryService) Create(ctx context.Context, voluntary *model.Voluntary) (*model.Voluntary, error) {
-	p.logger.Info("Service: Creating voluntary")
-	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary))
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Service: Creating voluntary", zap.String("correlationID: ", loggerUUID))
+	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary), zap.String("correlationID: ", loggerUUID))
 	return p.voluntaryRepository.Create(ctx, voluntary)
 }
 
 func (p *voluntaryService) GetCount(ctx context.Context) (int64, error) {
-	p.logger.Info("Service: Getting count")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Service: Getting count", zap.String("correlationID: ", loggerUUID))
 	return p.voluntaryRepository.GetCount(ctx)
 }
 
 func (p *voluntaryService) GetByID(ctx context.Context, id uint64) (bool, *model.Voluntary, error) {
-	p.logger.Info("Service: Getting voluntary by ID")
-	p.logger.Debug("ID", zap.Uint64("id", id))
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Service: Getting voluntary by ID", zap.String("correlationID: ", loggerUUID))
+	p.logger.Debug("ID", zap.Uint64("id", id), zap.String("correlationID: ", loggerUUID))
 	return p.voluntaryRepository.GetByID(ctx, id)
 }
 
 func (p *voluntaryService) GetAll(ctx context.Context, limit, offset int) ([]model.Voluntary, error) {
-	p.logger.Info("Service: Getting all voluntaries")
-	p.logger.Debug("Limit", zap.Int("limit", limit), zap.Int("offset", offset))
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Service: Getting all voluntaries", zap.String("correlationID: ", loggerUUID))
+	p.logger.Debug("Limit", zap.Int("limit", limit), zap.Int("offset", offset), zap.String("correlationID: ", loggerUUID))
 	return p.voluntaryRepository.GetAll(ctx, limit, offset)
 }
 
 func (p *voluntaryService) Update(ctx context.Context, voluntary *model.Voluntary) (*model.Voluntary, error) {
-	p.logger.Info("Service: Updating voluntary")
-	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary))
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Service: Updating voluntary", zap.String("correlationID: ", loggerUUID))
+	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary), zap.String("correlationID: ", loggerUUID))
 	return p.voluntaryRepository.Update(ctx, voluntary)
 }
 
 func (p *voluntaryService) Delete(ctx context.Context, id uint64) error {
-	p.logger.Info("Service: Deleting voluntary")
-	p.logger.Debug("ID", zap.Uint64("id", id))
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Service: Deleting voluntary", zap.String("correlationID: ", loggerUUID))
+	p.logger.Debug("ID", zap.Uint64("id", id), zap.String("correlationID: ", loggerUUID))
 	return p.voluntaryRepository.Delete(ctx, id)
 }

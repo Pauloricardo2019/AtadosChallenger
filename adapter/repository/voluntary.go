@@ -22,7 +22,8 @@ func NewVoluntaryRepository(db *gorm.DB, logger *zap.Logger) *voluntaryRepositor
 }
 
 func (p *voluntaryRepository) Create(ctx context.Context, voluntary *model.Voluntary) (*model.Voluntary, error) {
-	p.logger.Info("Repository: Creating voluntary")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Creating voluntary", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -32,13 +33,14 @@ func (p *voluntaryRepository) Create(ctx context.Context, voluntary *model.Volun
 		return nil, err
 	}
 
-	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary))
-	p.logger.Info("Repository: Voluntary created")
+	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Voluntary created", zap.String("correlationID: ", loggerUUID))
 	return voluntary, nil
 }
 
 func (p *voluntaryRepository) GetCount(ctx context.Context) (int64, error) {
-	p.logger.Info("Repository: Getting count")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Getting count", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return 0, err
@@ -51,14 +53,15 @@ func (p *voluntaryRepository) GetCount(ctx context.Context) (int64, error) {
 		return 0, err
 	}
 
-	p.logger.Debug("Count", zap.Int64("count", count))
-	p.logger.Info("Repository: Count gotten")
+	p.logger.Debug("Count", zap.Int64("count", count), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Count gotten", zap.String("correlationID: ", loggerUUID))
 
 	return count, nil
 }
 
 func (p *voluntaryRepository) GetByID(ctx context.Context, id uint64) (bool, *model.Voluntary, error) {
-	p.logger.Info("Repository: Getting voluntary by ID")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Getting voluntary by ID", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return false, nil, err
@@ -74,14 +77,15 @@ func (p *voluntaryRepository) GetByID(ctx context.Context, id uint64) (bool, *mo
 		}
 		return false, nil, err
 	}
-	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary), zap.Uint64("id", id), zap.Bool("found", true))
-	p.logger.Info("Repository: Voluntary gotten by ID")
+	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary), zap.Uint64("id", id), zap.Bool("found", true), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Voluntary gotten by ID", zap.String("correlationID: ", loggerUUID))
 
 	return true, voluntary, nil
 }
 
 func (p *voluntaryRepository) GetAll(ctx context.Context, limit, offset int) ([]model.Voluntary, error) {
-	p.logger.Info("Repository: Getting all voluntarys")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Getting all voluntarys", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -95,14 +99,15 @@ func (p *voluntaryRepository) GetAll(ctx context.Context, limit, offset int) ([]
 		Find(&voluntarys).Error; err != nil {
 		return nil, err
 	}
-	p.logger.Debug("Voluntaries", zap.Any("voluntarys", voluntarys), zap.Int("limit", limit), zap.Int("offset", offset))
-	p.logger.Info("Repository: Voluntaries gotten")
+	p.logger.Debug("Voluntaries", zap.Any("voluntarys", voluntarys), zap.Int("limit", limit), zap.Int("offset", offset), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Voluntaries gotten", zap.String("correlationID: ", loggerUUID))
 
 	return voluntarys, nil
 }
 
 func (p *voluntaryRepository) Update(ctx context.Context, voluntary *model.Voluntary) (*model.Voluntary, error) {
-	p.logger.Info("Repository: Updating voluntary")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Updating voluntary", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -111,27 +116,28 @@ func (p *voluntaryRepository) Update(ctx context.Context, voluntary *model.Volun
 	if err = conn.Debug().Save(voluntary).Error; err != nil {
 		return nil, err
 	}
-	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary))
-	p.logger.Info("Repository: Voluntary updated")
+	p.logger.Debug("Voluntary", zap.Any("voluntary", voluntary), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Voluntary updated", zap.String("correlationID: ", loggerUUID))
 
 	return voluntary, nil
 }
 
 func (p *voluntaryRepository) Delete(ctx context.Context, id uint64) error {
-	p.logger.Info("Repository: Deleting voluntary")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Deleting voluntary", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return err
 	}
 
-	p.logger.Debug("ID", zap.Uint64("id", id))
+	p.logger.Debug("ID", zap.Uint64("id", id), zap.String("correlationID: ", loggerUUID))
 	if err = conn.Delete(&model.Voluntary{
 		ID: id,
 	}).Error; err != nil {
 		return err
 	}
 
-	p.logger.Info("Repository: Voluntary deleted")
+	p.logger.Info("Repository: Voluntary deleted", zap.String("correlationID: ", loggerUUID))
 
 	return nil
 }

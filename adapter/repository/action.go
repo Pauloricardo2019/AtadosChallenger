@@ -23,7 +23,8 @@ func NewActionRepository(db *gorm.DB, logger *zap.Logger) *actionRepository {
 }
 
 func (p *actionRepository) Create(ctx context.Context, action *model.Action) (*model.Action, error) {
-	p.logger.Info("Repository: Creating action")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Creating action", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -33,13 +34,14 @@ func (p *actionRepository) Create(ctx context.Context, action *model.Action) (*m
 		return nil, err
 	}
 
-	p.logger.Debug("Action", zap.Any("action", action))
-	p.logger.Info("Repository: Action created")
+	p.logger.Debug("Action", zap.Any("action", action), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Action created", zap.String("correlationID: ", loggerUUID))
 	return action, nil
 }
 
 func (p *actionRepository) GetCount(ctx context.Context) (int64, error) {
-	p.logger.Info("Repository: Getting count")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Getting count", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return 0, err
@@ -52,14 +54,15 @@ func (p *actionRepository) GetCount(ctx context.Context) (int64, error) {
 		return 0, err
 	}
 
-	p.logger.Debug("Count", zap.Int64("count", count))
-	p.logger.Info("Repository: Count gotten")
+	p.logger.Debug("Count", zap.Int64("count", count), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Count gotten", zap.String("correlationID: ", loggerUUID))
 
 	return count, nil
 }
 
 func (p *actionRepository) GetByID(ctx context.Context, id uint64) (bool, *model.Action, error) {
-	p.logger.Info("Repository: Getting action by ID")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Getting action by ID", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return false, nil, err
@@ -75,14 +78,15 @@ func (p *actionRepository) GetByID(ctx context.Context, id uint64) (bool, *model
 		}
 		return false, nil, err
 	}
-	p.logger.Debug("Action", zap.Any("action", action), zap.Uint64("id", id), zap.Bool("found", true))
-	p.logger.Info("Repository: Action gotten by ID")
+	p.logger.Debug("Action", zap.Any("action", action), zap.Uint64("id", id), zap.Bool("found", true), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Action gotten by ID", zap.String("correlationID: ", loggerUUID))
 
 	return true, action, nil
 }
 
 func (p *actionRepository) GetAll(ctx context.Context, limit, offset int) ([]model.Action, error) {
-	p.logger.Info("Repository: Getting all actions")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Getting all actions", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -96,14 +100,15 @@ func (p *actionRepository) GetAll(ctx context.Context, limit, offset int) ([]mod
 		Find(&actions).Error; err != nil {
 		return nil, err
 	}
-	p.logger.Debug("Actions", zap.Any("actions", actions), zap.Int("limit", limit), zap.Int("offset", offset))
-	p.logger.Info("Repository: Actions gotten")
+	p.logger.Debug("Actions", zap.Any("actions", actions), zap.Int("limit", limit), zap.Int("offset", offset), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Actions gotten", zap.String("correlationID: ", loggerUUID))
 
 	return actions, nil
 }
 
 func (p *actionRepository) Update(ctx context.Context, action *model.Action) (*model.Action, error) {
-	p.logger.Info("Repository: Updating action")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Updating action", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return nil, err
@@ -112,27 +117,28 @@ func (p *actionRepository) Update(ctx context.Context, action *model.Action) (*m
 	if err = conn.Debug().Save(action).Error; err != nil {
 		return nil, err
 	}
-	p.logger.Debug("Action", zap.Any("action", action))
-	p.logger.Info("Repository: Action updated")
+	p.logger.Debug("Action", zap.Any("action", action), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Repository: Action updated", zap.String("correlationID: ", loggerUUID))
 
 	return action, nil
 }
 
 func (p *actionRepository) Delete(ctx context.Context, id uint64) error {
-	p.logger.Info("Repository: Deleting action")
+	loggerUUID := ctx.Value("logger").(string)
+	p.logger.Info("Repository: Deleting action", zap.String("correlationID: ", loggerUUID))
 	conn, err := p.baseRepo.getConnection(ctx)
 	if err != nil {
 		return err
 	}
 
-	p.logger.Debug("ID", zap.Uint64("id", id))
+	p.logger.Debug("ID", zap.Uint64("id", id), zap.String("correlationID: ", loggerUUID))
 	if err = conn.Delete(&model.Action{
 		ID: id,
 	}).Error; err != nil {
 		return err
 	}
 
-	p.logger.Info("Repository: Action deleted")
+	p.logger.Info("Repository: Action deleted", zap.String("correlationID: ", loggerUUID))
 
 	return nil
 }

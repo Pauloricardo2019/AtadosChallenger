@@ -13,6 +13,11 @@ import (
 type Controllers struct {
 	HealthCheckController healthCheckController
 	VoluntaryController   voluntaryController
+	ActionController      actionController
+}
+
+type Middlewares struct {
+	LogMiddleware logMiddleware
 }
 
 type ServerRest struct {
@@ -20,9 +25,10 @@ type ServerRest struct {
 	Engine      *echo.Echo
 	config      *model.Config
 	controllers Controllers
+	middlewares Middlewares
 }
 
-func NewRestServer(cfg *model.Config, controllers *Controllers) *ServerRest {
+func NewRestServer(cfg *model.Config, controllers *Controllers, middlewares *Middlewares) *ServerRest {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -38,6 +44,7 @@ func NewRestServer(cfg *model.Config, controllers *Controllers) *ServerRest {
 		Engine:      e,
 		config:      cfg,
 		controllers: *controllers,
+		middlewares: *middlewares,
 	}
 
 	server.registerRoutes()
@@ -51,7 +58,7 @@ func (s *ServerRest) registerRoutes() {
 
 		routeV1.GET("/health", s.controllers.HealthCheckController.HealthCheck)
 
-		voluntaryGroup := routeV1.Group("/voluntary")
+		voluntaryGroup := routeV1.Group("/voluntary", s.middlewares.LogMiddleware.InitLogger)
 		{
 			voluntaryGroup.POST("", s.controllers.VoluntaryController.CreateVoluntary)
 			voluntaryGroup.GET("/:id", s.controllers.VoluntaryController.GetVoluntaryByID)
@@ -60,14 +67,14 @@ func (s *ServerRest) registerRoutes() {
 			voluntaryGroup.DELETE("/:id", s.controllers.VoluntaryController.DeleteVoluntary)
 		}
 
-		//actionGroup := routeV1.Group("/action")
-		//{
-		//	actionGroup.POST("", s.controllers.VoluntaryController.CreateVoluntary)
-		//	actionGroup.GET("/:id", s.controllers.VoluntaryController.GetVoluntaryByID)
-		//	actionGroup.GET("", s.controllers.VoluntaryController.GetAllVoluntaries)
-		//	actionGroup.PUT("/:id", s.controllers.VoluntaryController.UpdateVoluntary)
-		//	actionGroup.DELETE("/:id", s.controllers.VoluntaryController.DeleteVoluntary)
-		//}
+		actionGroup := routeV1.Group("/action", s.middlewares.LogMiddleware.InitLogger)
+		{
+			actionGroup.POST("", s.controllers.ActionController.CreateAction)
+			actionGroup.GET("/:id", s.controllers.ActionController.GetActionByID)
+			actionGroup.GET("", s.controllers.ActionController.GetAllActions)
+			actionGroup.PUT("/:id", s.controllers.ActionController.UpdateAction)
+			actionGroup.DELETE("/:id", s.controllers.ActionController.DeleteAction)
+		}
 	}
 }
 

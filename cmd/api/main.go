@@ -7,6 +7,7 @@ import (
 	"atados/challenger/internal/config"
 	"atados/challenger/internal/controller/v1"
 	"atados/challenger/internal/facade"
+	"atados/challenger/internal/middleware"
 	"atados/challenger/internal/service"
 	"go.uber.org/zap"
 	"time"
@@ -50,6 +51,7 @@ func main() {
 
 	//Get Repositories
 	voluntaryRepository := repository.NewVoluntaryRepository(dbConn, logger)
+	actionRepository := repository.NewActionRepository(dbConn, logger)
 
 	logger.Info("Setup repositories",
 		zap.Time("StartedAt", time.Now()),
@@ -57,6 +59,7 @@ func main() {
 
 	//Get Services
 	voluntaryService := service.NewVoluntaryService(voluntaryRepository, logger)
+	actionService := service.NewActionService(actionRepository, logger)
 
 	logger.Info("Setup services",
 		zap.Time("StartedAt", time.Now()),
@@ -64,13 +67,18 @@ func main() {
 
 	//Get Facades
 	voluntaryFacade := facade.NewVoluntaryFacade(voluntaryService, logger)
+	actionFacade := facade.NewActionFacade(actionService, logger)
 
 	logger.Info("Setup facades",
 		zap.Time("StartedAt", time.Now()),
 	)
 
+	//Get Middleware
+	logMiddleware := middleware.NewLogMiddleware()
+
 	//Get Controllers
 	voluntaryController := v1.NewVoluntaryController(voluntaryFacade, logger)
+	actionController := v1.NewActionController(actionFacade, logger)
 	healthCheckController := v1.NewHealthCheckController()
 
 	logger.Info("Setup controllers",
@@ -82,6 +90,10 @@ func main() {
 		&rest.Controllers{
 			HealthCheckController: healthCheckController,
 			VoluntaryController:   voluntaryController,
+			ActionController:      actionController,
+		},
+		&rest.Middlewares{
+			LogMiddleware: logMiddleware,
 		},
 	)
 

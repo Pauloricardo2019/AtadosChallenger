@@ -15,14 +15,14 @@ type (
 	}
 )
 
-func (p *VoluntaryFacadeMock) CreateVoluntary(ctx context.Context, voluntaryRequest *dto.CreateVoluntaryRequest) (*dto.CreateVoluntaryVO, error) {
+func (p *VoluntaryFacadeMock) CreateVoluntary(ctx context.Context, voluntaryRequest *dto.CreateVoluntaryRequest) (*dto.CreateVoluntaryResponse, error) {
 	args := p.Called(ctx, voluntaryRequest)
 
-	var voluntaryReq *dto.CreateVoluntaryVO
+	var voluntaryReq *dto.CreateVoluntaryResponse
 	var err error
 
 	if args.Get(0) != nil {
-		voluntaryReq = args.Get(0).(*dto.CreateVoluntaryVO)
+		voluntaryReq = args.Get(0).(*dto.CreateVoluntaryResponse)
 	}
 
 	if args.Get(1) != nil {
@@ -91,14 +91,14 @@ func (p *VoluntaryFacadeMock) DeleteVoluntary(ctx context.Context, id uint64) er
 	return err
 }
 
-func (p *VoluntaryFacadeMock) CreateAction(ctx context.Context, actionRequest *dto.CreateActionRequest) (*dto.CreateActionVO, error) {
+func (p *ActionFacadeMock) CreateAction(ctx context.Context, actionRequest *dto.CreateActionRequest) (*dto.CreateActionResponse, error) {
 	args := p.Called(ctx, actionRequest)
 
-	var actionReq *dto.CreateActionVO
+	var actionReq *dto.CreateActionResponse
 	var err error
 
 	if args.Get(0) != nil {
-		actionReq = args.Get(0).(*dto.CreateActionVO)
+		actionReq = args.Get(0).(*dto.CreateActionResponse)
 	}
 
 	if args.Get(1) != nil {

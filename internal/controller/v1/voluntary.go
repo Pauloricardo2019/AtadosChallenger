@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"atados/challenger/internal/constants"
 	"atados/challenger/internal/dto"
 	"context"
 	"errors"
@@ -26,32 +27,36 @@ func NewVoluntaryController(voluntaryFacade voluntaryFacade, logger *zap.Logger)
 // @Description create voluntary router
 // @Tags Voluntary
 // @Accept json
-// @Param createProductRequest body dto.CreateVoluntaryRequest true "create voluntary"
+// @Param createVoluntaryRequest body dto.CreateVoluntaryRequest true "create voluntary"
 // @Produce json
-// @Success 201 {object} dto.CreateVoluntaryVO
+// @Success 201 {object} dto.CreateVoluntaryResponse
 // @Failure 500 {object} error
 // @Router /atados/v1/voluntary [post]
 func (p *voluntaryController) CreateVoluntary(c echo.Context) error {
 	p.logger.Info("Controller: Creating voluntary")
-	ctx := context.Background()
+
+	loggerUUID := c.Get("logger").(string)
+	p.logger.Info("correlationID", zap.String("correlationID: ", loggerUUID))
+
+	ctx := context.WithValue(context.Background(), "logger", loggerUUID)
 
 	createVoluntary := &dto.CreateVoluntaryRequest{}
 
 	if err := c.Bind(createVoluntary); err != nil {
-		p.logger.Error("Error binding request", zap.Error(err))
+		p.logger.Error("Error binding request", zap.Error(err), zap.String("correlationID: ", loggerUUID))
 		return c.JSON(http.StatusBadRequest, &dto.Error{Message: err.Error()})
 	}
 
-	p.logger.Debug("CreateVoluntaryRequest", zap.Any("createVoluntary", createVoluntary))
+	p.logger.Debug("CreateVoluntaryRequest", zap.Any("createVoluntary", createVoluntary), zap.String("correlationID: ", loggerUUID))
 
 	voluntary, err := p.voluntaryFacade.CreateVoluntary(ctx, createVoluntary)
 	if err != nil {
-		p.logger.Error("Error creating voluntary", zap.Error(err))
+		p.logger.Error("Error creating voluntary", zap.Error(err), zap.String("correlationID: ", loggerUUID))
 		return c.JSON(http.StatusInternalServerError, &dto.Error{Message: err.Error()})
 	}
 
-	p.logger.Debug("Voluntary response", zap.Any("voluntary", voluntary))
-	p.logger.Info("Voluntary created")
+	p.logger.Debug("Voluntary response", zap.Any("voluntary", voluntary), zap.String("correlationID: ", loggerUUID))
+	p.logger.Info("Voluntary created", zap.String("correlationID: ", loggerUUID))
 	return c.JSON(http.StatusCreated, voluntary)
 }
 
@@ -66,7 +71,11 @@ func (p *voluntaryController) CreateVoluntary(c echo.Context) error {
 // @Router /atados/v1/voluntary/{id} [get]
 func (p *voluntaryController) GetVoluntaryByID(c echo.Context) error {
 	p.logger.Info("Controller: Getting voluntary by ID")
-	ctx := context.Background()
+
+	loggerUUID := c.Get("logger").(string)
+	p.logger.Info("correlationID", zap.String("correlationID: ", loggerUUID))
+
+	ctx := context.WithValue(context.Background(), "logger", loggerUUID)
 
 	paramID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -79,8 +88,8 @@ func (p *voluntaryController) GetVoluntaryByID(c echo.Context) error {
 	voluntary, err := p.voluntaryFacade.GetVoluntaryByID(ctx, paramID)
 	if err != nil {
 		switch {
-		case errors.Is(err, errors.New("voluntary not found")):
-			p.logger.Error("Voluntary not found", zap.Error(err))
+		case errors.Is(constants.VoluntaryNotFound, err):
+			p.logger.Error("voluntary not found", zap.Error(err))
 			return c.JSON(http.StatusNotFound, &dto.Error{Message: err.Error()})
 		default:
 			p.logger.Error("Error getting voluntary", zap.Error(err))
@@ -105,7 +114,10 @@ func (p *voluntaryController) GetVoluntaryByID(c echo.Context) error {
 // @Router /atados/v1/voluntary [get]
 func (p *voluntaryController) GetAllVoluntaries(c echo.Context) error {
 	p.logger.Info("Controller: Getting all voluntaries")
-	ctx := context.Background()
+	loggerUUID := c.Get("logger").(string)
+	p.logger.Info("correlationID", zap.String("correlationID: ", loggerUUID))
+
+	ctx := context.WithValue(context.Background(), "logger", loggerUUID)
 
 	limit, err := strconv.Atoi(c.QueryParam("limit"))
 	if err != nil {
@@ -133,14 +145,17 @@ func (p *voluntaryController) GetAllVoluntaries(c echo.Context) error {
 // @Tags Voluntary
 // @Accept json
 // @Param id path int true "id voluntary"
-// @Param updateProductRequest body dto.UpdateVoluntaryRequest true "update voluntary"
+// @Param updateVoluntaryRequest body dto.UpdateVoluntaryRequest true "update voluntary"
 // @Produce json
 // @Success 200 {string} string "Voluntary updated successfully"
 // @Failure 500 {object} error
 // @Router /atados/v1/voluntary/{id} [put]
 func (p *voluntaryController) UpdateVoluntary(c echo.Context) error {
 	p.logger.Info("Controller: Updating voluntary")
-	ctx := context.Background()
+	loggerUUID := c.Get("logger").(string)
+	p.logger.Info("correlationID", zap.String("correlationID: ", loggerUUID))
+
+	ctx := context.WithValue(context.Background(), "logger", loggerUUID)
 
 	voluntaryID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -177,7 +192,10 @@ func (p *voluntaryController) UpdateVoluntary(c echo.Context) error {
 // @Router /atados/v1/voluntary/{id} [delete]
 func (p *voluntaryController) DeleteVoluntary(c echo.Context) error {
 	p.logger.Info("Controller: Deleting voluntary")
-	ctx := context.Background()
+	loggerUUID := c.Get("logger").(string)
+	p.logger.Info("correlationID", zap.String("correlationID: ", loggerUUID))
+
+	ctx := context.WithValue(context.Background(), "logger", loggerUUID)
 
 	voluntaryID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

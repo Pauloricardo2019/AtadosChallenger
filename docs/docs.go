@@ -25,6 +25,196 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/atados/v1/action": {
+            "get": {
+                "description": "get all actions by pagination router",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Action"
+                ],
+                "summary": "get all actions by pagination router",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GetAllActionsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            },
+            "post": {
+                "description": "create action router",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Action"
+                ],
+                "summary": "create action router",
+                "parameters": [
+                    {
+                        "description": "create action",
+                        "name": "createActionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateActionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/CreateActionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/atados/v1/action/{id}": {
+            "get": {
+                "description": "get action by id router",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Action"
+                ],
+                "summary": "get action by id router",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id action",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/GetActionByIDResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            },
+            "put": {
+                "description": "update action router",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Action"
+                ],
+                "summary": "update action router",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id action",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "update action",
+                        "name": "updateActionRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateActionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Action updated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete action router",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Action"
+                ],
+                "summary": "delete action router",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id action",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Action deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/atados/v1/health": {
             "get": {
                 "description": "healthcheck router",
@@ -50,7 +240,7 @@ const docTemplate = `{
         },
         "/atados/v1/voluntary": {
             "get": {
-                "description": "get all products by pagination router",
+                "description": "get all voluntarys by pagination router",
                 "consumes": [
                     "application/json"
                 ],
@@ -60,7 +250,7 @@ const docTemplate = `{
                 "tags": [
                     "Voluntary"
                 ],
-                "summary": "get all products by pagination router",
+                "summary": "get all voluntarys by pagination router",
                 "parameters": [
                     {
                         "type": "integer",
@@ -89,7 +279,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "create product router",
+                "description": "create voluntary router",
                 "consumes": [
                     "application/json"
                 ],
@@ -99,11 +289,11 @@ const docTemplate = `{
                 "tags": [
                     "Voluntary"
                 ],
-                "summary": "create product router",
+                "summary": "create voluntary router",
                 "parameters": [
                     {
-                        "description": "create product",
-                        "name": "createProductRequest",
+                        "description": "create voluntary",
+                        "name": "createVoluntaryRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -115,7 +305,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/CreateVoluntaryVO"
+                            "$ref": "#/definitions/CreateVoluntaryResponse"
                         }
                     },
                     "500": {
@@ -127,7 +317,7 @@ const docTemplate = `{
         },
         "/atados/v1/voluntary/{id}": {
             "get": {
-                "description": "get product by id router",
+                "description": "get voluntary by id router",
                 "consumes": [
                     "application/json"
                 ],
@@ -137,11 +327,11 @@ const docTemplate = `{
                 "tags": [
                     "Voluntary"
                 ],
-                "summary": "get product by id router",
+                "summary": "get voluntary by id router",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id product",
+                        "description": "id voluntary",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -161,7 +351,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "update product router",
+                "description": "update voluntary router",
                 "consumes": [
                     "application/json"
                 ],
@@ -171,18 +361,18 @@ const docTemplate = `{
                 "tags": [
                     "Voluntary"
                 ],
-                "summary": "update product router",
+                "summary": "update voluntary router",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id product",
+                        "description": "id voluntary",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "update product",
-                        "name": "updateProductRequest",
+                        "description": "update voluntary",
+                        "name": "updateVoluntaryRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -204,7 +394,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "delete product router",
+                "description": "delete voluntary router",
                 "consumes": [
                     "application/json"
                 ],
@@ -214,11 +404,11 @@ const docTemplate = `{
                 "tags": [
                     "Voluntary"
                 ],
-                "summary": "delete product router",
+                "summary": "delete voluntary router",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id product",
+                        "description": "id voluntary",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -240,6 +430,83 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "Action": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "neighborhood": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "ActionPagination": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "CreateActionRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "neighborhood": {
+                    "type": "string"
+                }
+            }
+        },
+        "CreateActionResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "CreateVoluntaryRequest": {
             "type": "object",
             "properties": {
@@ -257,11 +524,57 @@ const docTemplate = `{
                 }
             }
         },
-        "CreateVoluntaryVO": {
+        "CreateVoluntaryResponse": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "GetActionByIDResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "neighborhood": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "GetAllActionsResponse": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Action"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/ActionPagination"
                 }
             }
         },
@@ -301,6 +614,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "UpdateActionRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "neighborhood": {
                     "type": "string"
                 }
             }

@@ -2,10 +2,10 @@ package dto
 
 import "atados/challenger/internal/model"
 
-type CreateVoluntaryVO struct {
+type CreateVoluntaryResponse struct {
 	ID uint64 `json:"id"`
-} // @name CreateVoluntaryVO
+} // @name CreateVoluntaryResponse
 
-func (c *CreateVoluntaryVO) ParseFromVoluntaryVO(voluntary *model.Voluntary) {
+func (c *CreateVoluntaryResponse) ParseFromVoluntaryVO(voluntary *model.Voluntary) {
 	c.ID = voluntary.ID
 }

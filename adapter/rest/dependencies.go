@@ -14,4 +14,14 @@ type (
 		UpdateVoluntary(c echo.Context) error
 		DeleteVoluntary(c echo.Context) error
 	}
+	actionController interface {
+		CreateAction(c echo.Context) error
+		GetActionByID(c echo.Context) error
+		GetAllActions(c echo.Context) error
+		UpdateAction(c echo.Context) error
+		DeleteAction(c echo.Context) error
+	}
+	logMiddleware interface {
+		InitLogger(next echo.HandlerFunc) echo.HandlerFunc
+	}
 )

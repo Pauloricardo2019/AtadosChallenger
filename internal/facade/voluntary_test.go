@@ -18,7 +18,7 @@ func init() {
 	logger, _ = zap.NewDevelopment()
 }
 
-func TestVoluntaryFacade_CreateProduct(t *testing.T) {
+func TestVoluntaryFacade_CreateVoluntary(t *testing.T) {
 	ctx := context.Background()
 
 	voluntaryServiceMock := &mocks.VoluntaryServiceMock{}
@@ -54,7 +54,7 @@ func TestVoluntaryFacade_CreateProduct(t *testing.T) {
 
 }
 
-func TestVoluntaryFacade_GetByIDProduct(t *testing.T) {
+func TestVoluntaryFacade_GetByIDVoluntary(t *testing.T) {
 	ctx := context.Background()
 
 	voluntaryServiceMock := &mocks.VoluntaryServiceMock{}
@@ -90,7 +90,7 @@ func TestVoluntaryFacade_GetByIDProduct(t *testing.T) {
 
 }
 
-func TestVoluntaryFacade_GetAllProducts(t *testing.T) {
+func TestVoluntaryFacade_GetAllVoluntarys(t *testing.T) {
 	ctx := context.Background()
 
 	voluntaryServiceMock := &mocks.VoluntaryServiceMock{}
@@ -140,7 +140,7 @@ func TestVoluntaryFacade_GetAllProducts(t *testing.T) {
 
 }
 
-func TestVoluntaryFacade_UpdateProduct(t *testing.T) {
+func TestVoluntaryFacade_UpdateVoluntary(t *testing.T) {
 	ctx := context.Background()
 
 	voluntaryServiceMock := &mocks.VoluntaryServiceMock{}
@@ -184,7 +184,7 @@ func TestVoluntaryFacade_UpdateProduct(t *testing.T) {
 
 }
 
-func TestVoluntaryFacade_DeleteProduct(t *testing.T) {
+func TestVoluntaryFacade_DeleteVoluntary(t *testing.T) {
 	ctx := context.Background()
 
 	voluntaryServiceMock := &mocks.VoluntaryServiceMock{}

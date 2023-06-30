@@ -12,32 +12,34 @@ import (
 	"time"
 )
 
-func TestVoluntaryController_CreateVoluntary(t *testing.T) {
+func TestActionController_CreateAction(t *testing.T) {
 
 	testCases := []struct {
-		name                    string
-		voluntaryRequest        *dto.CreateVoluntaryRequest
-		urlRequested            string
-		expectedHttpStatusCode  int
-		facadeVoluntaryResponse *dto.CreateVoluntaryResponse
-		facadeVoluntaryError    error
-		expectedError           error
+		name                   string
+		actionRequest          *dto.CreateActionRequest
+		urlRequested           string
+		expectedHttpStatusCode int
+		facadeActionResponse   *dto.CreateActionResponse
+		facadeActionError      error
+		expectedError          error
 	}{
 		{
 			name: "OK",
-			voluntaryRequest: &dto.CreateVoluntaryRequest{
-				FirstName:    "Miguel",
-				LastName:     "Ferreira",
-				Neighborhood: "Centro",
-				City:         "Rio de Janeiro",
+			actionRequest: &dto.CreateActionRequest{
+				Name:         "Action test",
+				Institution:  "Institution fake",
+				City:         "São Paulo",
+				Neighborhood: "Limoeiro",
+				Address:      "Rua Palmeira, 25",
+				Description:  "Reuniao as 15 horas",
 			},
-			urlRequested:           "/atados/v1/voluntary",
+			urlRequested:           "/atados/v1/action",
 			expectedHttpStatusCode: 201,
-			facadeVoluntaryResponse: &dto.CreateVoluntaryResponse{
+			facadeActionResponse: &dto.CreateActionResponse{
 				ID: 1,
 			},
-			facadeVoluntaryError: nil,
-			expectedError:        nil,
+			facadeActionError: nil,
+			expectedError:     nil,
 		},
 	}
 
@@ -46,13 +48,13 @@ func TestVoluntaryController_CreateVoluntary(t *testing.T) {
 			server, facade := setupTestRouter(t)
 			router := server.Engine
 
-			facade.VoluntaryControllerMock.On("CreateVoluntary", mock.AnythingOfType("*context.emptyCtx"), mock.Anything).
+			facade.ActionControllerMock.On("CreateAction", mock.AnythingOfType("*context.emptyCtx"), mock.Anything).
 				Return(
-					tc.facadeVoluntaryResponse,
-					tc.facadeVoluntaryError,
+					tc.facadeActionResponse,
+					tc.facadeActionError,
 				)
 
-			data, err := json.Marshal(tc.voluntaryRequest)
+			data, err := json.Marshal(tc.actionRequest)
 			assert.NoError(t, err)
 			reader := bytes.NewReader(data)
 
@@ -65,10 +67,10 @@ func TestVoluntaryController_CreateVoluntary(t *testing.T) {
 			responseString := w.Body.String()
 
 			if tc.expectedError == nil {
-				getParsingJson := &dto.CreateVoluntaryResponse{}
+				getParsingJson := &dto.CreateActionResponse{}
 				err := json.Unmarshal([]byte(responseString), getParsingJson)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.facadeVoluntaryResponse.ID, getParsingJson.ID)
+				assert.Equal(t, tc.facadeActionResponse.ID, getParsingJson.ID)
 				return
 			}
 
@@ -83,32 +85,34 @@ func TestVoluntaryController_CreateVoluntary(t *testing.T) {
 
 }
 
-func TestVoluntaryController_GetVoluntaryByID(t *testing.T) {
+func TestActionController_GetActionByID(t *testing.T) {
 	testCases := []struct {
-		name                    string
-		voluntaryID             uint64
-		urlRequested            string
-		expectedHttpStatusCode  int
-		facadeVoluntaryResponse *dto.GetVoluntaryByIDResponse
-		facadeVoluntaryError    error
-		expectedError           error
+		name                   string
+		actionID               uint64
+		urlRequested           string
+		expectedHttpStatusCode int
+		facadeActionResponse   *dto.GetActionByIDResponse
+		facadeActionError      error
+		expectedError          error
 	}{
 		{
 			name:                   "OK",
-			voluntaryID:            uint64(1),
-			urlRequested:           "/atados/v1/voluntary/1",
+			actionID:               uint64(1),
+			urlRequested:           "/atados/v1/action/1",
 			expectedHttpStatusCode: 200,
-			facadeVoluntaryResponse: &dto.GetVoluntaryByIDResponse{
+			facadeActionResponse: &dto.GetActionByIDResponse{
 				ID:           1,
-				FirstName:    "Miguel",
-				LastName:     "Ferreira",
-				Neighborhood: "Centro",
-				City:         "Rio de Janeiro",
+				Name:         "Action test",
+				Institution:  "Institution fake",
+				City:         "São Paulo",
+				Neighborhood: "Limoeiro",
+				Address:      "Rua Palmeira, 25",
+				Description:  "Reuniao as 15 horas",
 				CreatedAt:    time.Now(),
 				UpdatedAt:    time.Now(),
 			},
-			facadeVoluntaryError: nil,
-			expectedError:        nil,
+			facadeActionError: nil,
+			expectedError:     nil,
 		},
 	}
 
@@ -117,10 +121,10 @@ func TestVoluntaryController_GetVoluntaryByID(t *testing.T) {
 			server, facade := setupTestRouter(t)
 			router := server.Engine
 
-			facade.VoluntaryControllerMock.On("GetVoluntaryByID", mock.AnythingOfType("*context.emptyCtx"), mock.Anything).
+			facade.ActionControllerMock.On("GetActionByID", mock.AnythingOfType("*context.emptyCtx"), mock.Anything).
 				Return(
-					tc.facadeVoluntaryResponse,
-					tc.facadeVoluntaryError,
+					tc.facadeActionResponse,
+					tc.facadeActionError,
 				)
 
 			w := httptest.NewRecorder()
@@ -132,10 +136,10 @@ func TestVoluntaryController_GetVoluntaryByID(t *testing.T) {
 			responseString := w.Body.String()
 
 			if tc.expectedError == nil {
-				getParsingJson := &dto.GetVoluntaryByIDResponse{}
+				getParsingJson := &dto.GetActionByIDResponse{}
 				err := json.Unmarshal([]byte(responseString), getParsingJson)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.facadeVoluntaryResponse.ID, getParsingJson.ID)
+				assert.Equal(t, tc.facadeActionResponse.ID, getParsingJson.ID)
 				return
 			}
 
@@ -150,48 +154,52 @@ func TestVoluntaryController_GetVoluntaryByID(t *testing.T) {
 
 }
 
-func TestVoluntaryController_GetAllVoluntarys(t *testing.T) {
+func TestActionController_GetAllActions(t *testing.T) {
 	testCases := []struct {
-		name                    string
-		urlRequested            string
-		expectedHttpStatusCode  int
-		facadeVoluntaryResponse *dto.GetAllVoluntariesResponse
-		facadeVoluntaryError    error
-		expectedError           error
+		name                   string
+		urlRequested           string
+		expectedHttpStatusCode int
+		facadeActionResponse   *dto.GetAllActionsResponse
+		facadeActionError      error
+		expectedError          error
 	}{
 		{
 			name:                   "OK",
-			urlRequested:           "/atados/v1/voluntary",
+			urlRequested:           "/atados/v1/action",
 			expectedHttpStatusCode: 200,
-			facadeVoluntaryResponse: &dto.GetAllVoluntariesResponse{
-				Voluntaries: []dto.Voluntary{
+			facadeActionResponse: &dto.GetAllActionsResponse{
+				Actions: []dto.Action{
 					{
 						ID:           uint64(1),
-						FirstName:    "Miguel",
-						LastName:     "Ferreira",
-						Neighborhood: "Centro",
-						City:         "Rio de Janeiro",
+						Name:         "Action test",
+						Institution:  "Institution fake",
+						City:         "São Paulo",
+						Neighborhood: "Limoeiro",
+						Address:      "Rua Palmeira, 25",
+						Description:  "Reuniao as 15 horas",
 						CreatedAt:    time.Now(),
 						UpdatedAt:    time.Now(),
 					},
 					{
 						ID:           uint64(2),
-						FirstName:    "Caio",
-						LastName:     "Matos",
-						Neighborhood: "Centro",
+						Name:         "Action test 2",
+						Institution:  "Institution fake 2",
 						City:         "Rio de Janeiro",
+						Neighborhood: "Bragança",
+						Address:      "Rua das flores, 25",
+						Description:  "Reuniao as 17 horas",
 						CreatedAt:    time.Now(),
 						UpdatedAt:    time.Now(),
 					},
 				},
-				Pagination: dto.VoluntaryPagination{
+				Pagination: dto.ActionPagination{
 					Limit:  10,
 					Offset: 0,
 					Total:  2,
 				},
 			},
-			facadeVoluntaryError: nil,
-			expectedError:        nil,
+			facadeActionError: nil,
+			expectedError:     nil,
 		},
 	}
 
@@ -200,10 +208,10 @@ func TestVoluntaryController_GetAllVoluntarys(t *testing.T) {
 			server, facade := setupTestRouter(t)
 			router := server.Engine
 
-			facade.VoluntaryControllerMock.On("GetAllVoluntaries", mock.AnythingOfType("*context.emptyCtx"), mock.Anything, mock.Anything).
+			facade.ActionControllerMock.On("GetAllActions", mock.AnythingOfType("*context.emptyCtx"), mock.Anything, mock.Anything).
 				Return(
-					tc.facadeVoluntaryResponse,
-					tc.facadeVoluntaryError,
+					tc.facadeActionResponse,
+					tc.facadeActionError,
 				)
 
 			w := httptest.NewRecorder()
@@ -215,10 +223,10 @@ func TestVoluntaryController_GetAllVoluntarys(t *testing.T) {
 			responseString := w.Body.String()
 
 			if tc.expectedError == nil {
-				getParsingJson := &dto.GetAllVoluntariesResponse{}
+				getParsingJson := &dto.GetAllActionsResponse{}
 				err := json.Unmarshal([]byte(responseString), getParsingJson)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.facadeVoluntaryResponse.Voluntaries[0].ID, getParsingJson.Voluntaries[0].ID)
+				assert.Equal(t, tc.facadeActionResponse.Actions[0].ID, getParsingJson.Actions[0].ID)
 				return
 			}
 
@@ -232,28 +240,30 @@ func TestVoluntaryController_GetAllVoluntarys(t *testing.T) {
 	}
 }
 
-func TestVoluntaryController_UpdateVoluntary(t *testing.T) {
+func TestActionController_UpdateAction(t *testing.T) {
 	testCases := []struct {
 		name                   string
-		voluntaryUpdateRequest *dto.UpdateVoluntaryRequest
-		voluntaryID            uint64
+		actionUpdateRequest    *dto.UpdateActionRequest
+		actionID               uint64
 		urlRequested           string
 		expectedHttpStatusCode int
-		facadeVoluntaryError   error
+		facadeActionError      error
 		expectedError          error
 	}{
 		{
 			name: "OK",
-			voluntaryUpdateRequest: &dto.UpdateVoluntaryRequest{
-				FirstName:    "Caio",
-				LastName:     "Matos",
-				Neighborhood: "Centro",
+			actionUpdateRequest: &dto.UpdateActionRequest{
+				Name:         "Action test updated",
+				Institution:  "Institution fake updated",
 				City:         "Rio de Janeiro",
+				Neighborhood: "Bragança",
+				Address:      "Rua das flores, 25",
+				Description:  "Reuniao as 17 horas",
 			},
-			voluntaryID:            1,
-			urlRequested:           "/atados/v1/voluntary/1",
+			actionID:               1,
+			urlRequested:           "/atados/v1/action/1",
 			expectedHttpStatusCode: 200,
-			facadeVoluntaryError:   nil,
+			facadeActionError:      nil,
 			expectedError:          nil,
 		},
 	}
@@ -263,12 +273,12 @@ func TestVoluntaryController_UpdateVoluntary(t *testing.T) {
 			server, facade := setupTestRouter(t)
 			router := server.Engine
 
-			facade.VoluntaryControllerMock.On("UpdateVoluntary", mock.AnythingOfType("*context.emptyCtx"), mock.Anything, mock.Anything).
+			facade.ActionControllerMock.On("UpdateAction", mock.AnythingOfType("*context.emptyCtx"), mock.Anything, mock.Anything).
 				Return(
-					tc.facadeVoluntaryError,
+					tc.facadeActionError,
 				)
 
-			data, err := json.Marshal(tc.voluntaryUpdateRequest)
+			data, err := json.Marshal(tc.actionUpdateRequest)
 			assert.NoError(t, err)
 			reader := bytes.NewReader(data)
 
@@ -281,7 +291,7 @@ func TestVoluntaryController_UpdateVoluntary(t *testing.T) {
 			responseString := w.Body.String()
 
 			if tc.expectedError == nil {
-				assert.Equal(t, responseString, "\"Voluntary updated successfully\"\n")
+				assert.Equal(t, responseString, "\"Action updated successfully\"\n")
 				return
 			}
 
@@ -295,21 +305,21 @@ func TestVoluntaryController_UpdateVoluntary(t *testing.T) {
 	}
 }
 
-func TestVoluntaryController_DeleteVoluntary(t *testing.T) {
+func TestActionController_DeleteAction(t *testing.T) {
 	testCases := []struct {
 		name                   string
-		voluntaryID            uint64
+		actionID               uint64
 		urlRequested           string
 		expectedHttpStatusCode int
-		facadeVoluntaryError   error
+		facadeActionError      error
 		expectedError          error
 	}{
 		{
 			name:                   "OK",
-			voluntaryID:            1,
-			urlRequested:           "/atados/v1/voluntary/1",
+			actionID:               1,
+			urlRequested:           "/atados/v1/action/1",
 			expectedHttpStatusCode: 200,
-			facadeVoluntaryError:   nil,
+			facadeActionError:      nil,
 			expectedError:          nil,
 		},
 	}
@@ -319,9 +329,9 @@ func TestVoluntaryController_DeleteVoluntary(t *testing.T) {
 			server, facade := setupTestRouter(t)
 			router := server.Engine
 
-			facade.VoluntaryControllerMock.On("DeleteVoluntary", mock.AnythingOfType("*context.emptyCtx"), mock.Anything).
+			facade.ActionControllerMock.On("DeleteAction", mock.AnythingOfType("*context.emptyCtx"), mock.Anything).
 				Return(
-					tc.facadeVoluntaryError,
+					tc.facadeActionError,
 				)
 
 			w := httptest.NewRecorder()
@@ -333,7 +343,7 @@ func TestVoluntaryController_DeleteVoluntary(t *testing.T) {
 			responseString := w.Body.String()
 
 			if tc.expectedError == nil {
-				assert.Equal(t, responseString, "\"Voluntary deleted successfully\"\n")
+				assert.Equal(t, responseString, "\"Action deleted successfully\"\n")
 				return
 			}
 

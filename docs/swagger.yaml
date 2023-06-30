@@ -1,4 +1,54 @@
 definitions:
+  Action:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      institution:
+        type: string
+      name:
+        type: string
+      neighborhood:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  ActionPagination:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
+  CreateActionRequest:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      description:
+        type: string
+      institution:
+        type: string
+      name:
+        type: string
+      neighborhood:
+        type: string
+    type: object
+  CreateActionResponse:
+    properties:
+      id:
+        type: integer
+    type: object
   CreateVoluntaryRequest:
     properties:
       city:
@@ -10,10 +60,40 @@ definitions:
       neighborhood:
         type: string
     type: object
-  CreateVoluntaryVO:
+  CreateVoluntaryResponse:
     properties:
       id:
         type: integer
+    type: object
+  GetActionByIDResponse:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      institution:
+        type: string
+      name:
+        type: string
+      neighborhood:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  GetAllActionsResponse:
+    properties:
+      actions:
+        items:
+          $ref: '#/definitions/Action'
+        type: array
+      pagination:
+        $ref: '#/definitions/ActionPagination'
     type: object
   GetAllVoluntariesResponse:
     properties:
@@ -39,6 +119,21 @@ definitions:
       neighborhood:
         type: string
       updatedAt:
+        type: string
+    type: object
+  UpdateActionRequest:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      description:
+        type: string
+      institution:
+        type: string
+      name:
+        type: string
+      neighborhood:
         type: string
     type: object
   UpdateVoluntaryRequest:
@@ -88,6 +183,133 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
 paths:
+  /atados/v1/action:
+    get:
+      consumes:
+      - application/json
+      description: get all actions by pagination router
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GetAllActionsResponse'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get all actions by pagination router
+      tags:
+      - Action
+    post:
+      consumes:
+      - application/json
+      description: create action router
+      parameters:
+      - description: create action
+        in: body
+        name: createActionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreateActionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/CreateActionResponse'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: create action router
+      tags:
+      - Action
+  /atados/v1/action/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete action router
+      parameters:
+      - description: id action
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Action deleted successfully
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: delete action router
+      tags:
+      - Action
+    get:
+      consumes:
+      - application/json
+      description: get action by id router
+      parameters:
+      - description: id action
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GetActionByIDResponse'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get action by id router
+      tags:
+      - Action
+    put:
+      consumes:
+      - application/json
+      description: update action router
+      parameters:
+      - description: id action
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update action
+        in: body
+        name: updateActionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateActionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Action updated successfully
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: update action router
+      tags:
+      - Action
   /atados/v1/health:
     get:
       consumes:
@@ -107,7 +329,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get all products by pagination router
+      description: get all voluntarys by pagination router
       parameters:
       - description: limit
         in: query
@@ -127,17 +349,17 @@ paths:
         "500":
           description: Internal Server Error
           schema: {}
-      summary: get all products by pagination router
+      summary: get all voluntarys by pagination router
       tags:
       - Voluntary
     post:
       consumes:
       - application/json
-      description: create product router
+      description: create voluntary router
       parameters:
-      - description: create product
+      - description: create voluntary
         in: body
-        name: createProductRequest
+        name: createVoluntaryRequest
         required: true
         schema:
           $ref: '#/definitions/CreateVoluntaryRequest'
@@ -147,20 +369,20 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/CreateVoluntaryVO'
+            $ref: '#/definitions/CreateVoluntaryResponse'
         "500":
           description: Internal Server Error
           schema: {}
-      summary: create product router
+      summary: create voluntary router
       tags:
       - Voluntary
   /atados/v1/voluntary/{id}:
     delete:
       consumes:
       - application/json
-      description: delete product router
+      description: delete voluntary router
       parameters:
-      - description: id product
+      - description: id voluntary
         in: path
         name: id
         required: true
@@ -175,15 +397,15 @@ paths:
         "500":
           description: Internal Server Error
           schema: {}
-      summary: delete product router
+      summary: delete voluntary router
       tags:
       - Voluntary
     get:
       consumes:
       - application/json
-      description: get product by id router
+      description: get voluntary by id router
       parameters:
-      - description: id product
+      - description: id voluntary
         in: path
         name: id
         required: true
@@ -198,22 +420,22 @@ paths:
         "500":
           description: Internal Server Error
           schema: {}
-      summary: get product by id router
+      summary: get voluntary by id router
       tags:
       - Voluntary
     put:
       consumes:
       - application/json
-      description: update product router
+      description: update voluntary router
       parameters:
-      - description: id product
+      - description: id voluntary
         in: path
         name: id
         required: true
         type: integer
-      - description: update product
+      - description: update voluntary
         in: body
-        name: updateProductRequest
+        name: updateVoluntaryRequest
         required: true
         schema:
           $ref: '#/definitions/UpdateVoluntaryRequest'
@@ -227,7 +449,7 @@ paths:
         "500":
           description: Internal Server Error
           schema: {}
-      summary: update product router
+      summary: update voluntary router
       tags:
       - Voluntary
 securityDefinitions:

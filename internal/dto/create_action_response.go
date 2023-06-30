@@ -2,10 +2,10 @@ package dto
 
 import "atados/challenger/internal/model"
 
-type CreateActionVO struct {
+type CreateActionResponse struct {
 	ID uint64 `json:"id"`
-} // @name CreateActionVO
+} // @name CreateActionResponse
 
-func (c *CreateActionVO) ParseFromActionVO(action *model.Action) {
+func (c *CreateActionResponse) ParseFromActionVO(action *model.Action) {
 	c.ID = action.ID
 }

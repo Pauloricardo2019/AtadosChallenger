@@ -17,6 +17,7 @@ func init() {
 
 type Facade struct {
 	VoluntaryControllerMock *facadeMocks.VoluntaryFacadeMock
+	ActionControllerMock    *facadeMocks.ActionFacadeMock
 }
 
 func setupTestRouter(t *testing.T) (*rest.ServerRest, Facade) {
@@ -24,6 +25,7 @@ func setupTestRouter(t *testing.T) (*rest.ServerRest, Facade) {
 
 	facades := Facade{
 		VoluntaryControllerMock: &facadeMocks.VoluntaryFacadeMock{},
+		ActionControllerMock:    &facadeMocks.ActionFacadeMock{},
 	}
 
 	cfg := &model.Config{}
@@ -32,6 +34,7 @@ func setupTestRouter(t *testing.T) (*rest.ServerRest, Facade) {
 		cfg,
 		&rest.Controllers{
 			VoluntaryController:   v1.NewVoluntaryController(facades.VoluntaryControllerMock, logger),
+			ActionController:      v1.NewActionController(facades.ActionControllerMock, logger),
 			HealthCheckController: v1.NewHealthCheckController(),
 		},
 	)
