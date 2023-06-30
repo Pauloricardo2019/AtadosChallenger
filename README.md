@@ -1,6 +1,6 @@
 # AtadosApi
 
-<img src="https://imgur.com/a/iTkW6kO" alt="exemplo imagem">
+<img src="[https://imgur.com/a/iTkW6kO](https://imgur.com/a/iTkW6kO)" alt="exemplo imagem">
 
 >Resumo:
 Este projeto foi desenvolvido a fim de solucionar um desafio proposto pela empresa Atados. Foi feito uma api em golang usando o echo framework, contendo: testes, documentação, docker e Makefile.
